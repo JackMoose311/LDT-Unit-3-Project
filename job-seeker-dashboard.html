@@ -1,0 +1,809 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Job Seeker Dashboard - Work Away</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-orange: #ff6b35;
+            --secondary-orange: #ff8c42;
+            --light-orange: #ffb366;
+            --dark-orange: #e55a2b;
+            --white: #ffffff;
+            --light-gray: #f8f9fa;
+            --gray: #6c757d;
+            --dark-gray: #495057;
+            --success: #28a745;
+            --warning: #ffc107;
+            --info: #17a2b8;
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: var(--dark-gray);
+            background-color: var(--light-gray);
+        }
+
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, var(--primary-orange), var(--secondary-orange));
+            color: var(--white);
+            padding: 1rem 0;
+            box-shadow: var(--shadow);
+        }
+
+        .nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: bold;
+            text-decoration: none;
+            color: var(--white);
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            background-color: var(--white);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary-orange);
+            font-weight: bold;
+        }
+
+        /* Sidebar */
+        .dashboard-container {
+            display: flex;
+            max-width: 1400px;
+            margin: 0 auto;
+            background-color: var(--white);
+            min-height: calc(100vh - 80px);
+        }
+
+        .sidebar {
+            width: 250px;
+            background-color: var(--white);
+            border-right: 1px solid #e9ecef;
+            padding: 2rem 0;
+        }
+
+        .sidebar-menu {
+            list-style: none;
+        }
+
+        .sidebar-menu li {
+            margin-bottom: 0.5rem;
+        }
+
+        .sidebar-menu a {
+            display: flex;
+            align-items: center;
+            padding: 1rem 2rem;
+            color: var(--gray);
+            text-decoration: none;
+            transition: all 0.3s ease;
+            border-left: 3px solid transparent;
+        }
+
+        .sidebar-menu a:hover,
+        .sidebar-menu a.active {
+            background-color: var(--light-gray);
+            color: var(--primary-orange);
+            border-left-color: var(--primary-orange);
+        }
+
+        .sidebar-menu .icon {
+            margin-right: 0.75rem;
+            font-size: 1.2rem;
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            padding: 2rem;
+        }
+
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .page-title {
+            font-size: 2rem;
+            color: var(--dark-gray);
+            font-weight: 600;
+        }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary-orange), var(--secondary-orange));
+            color: var(--white);
+        }
+
+        .btn-outline {
+            background: transparent;
+            color: var(--primary-orange);
+            border: 2px solid var(--primary-orange);
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow);
+        }
+
+        /* Profile Completion */
+        .profile-alert {
+            background: linear-gradient(135deg, #fff3cd, #ffeaa7);
+            border: 1px solid #ffc107;
+            border-radius: 10px;
+            padding: 1rem;
+            margin-bottom: 2rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .progress-bar {
+            background-color: #e9ecef;
+            border-radius: 10px;
+            height: 8px;
+            overflow: hidden;
+            flex: 1;
+        }
+
+        .progress-fill {
+            background: linear-gradient(135deg, var(--primary-orange), var(--secondary-orange));
+            height: 100%;
+            width: 75%;
+            border-radius: 10px;
+        }
+
+        /* Stats Cards */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: var(--white);
+            padding: 1.5rem;
+            border-radius: 10px;
+            box-shadow: var(--shadow);
+            text-align: center;
+            border-top: 4px solid var(--primary-orange);
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: var(--primary-orange);
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            color: var(--gray);
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        /* Content Grid */
+        .content-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .card {
+            background: var(--white);
+            border-radius: 10px;
+            box-shadow: var(--shadow);
+            overflow: hidden;
+        }
+
+        .card-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid #e9ecef;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .card-title {
+            font-size: 1.25rem;
+            color: var(--dark-gray);
+            font-weight: 600;
+        }
+
+        .card-body {
+            padding: 1.5rem;
+        }
+
+        /* Job Listings */
+        .job-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            padding: 1.5rem 0;
+            border-bottom: 1px solid #f1f1f1;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .job-item:hover {
+            background-color: var(--light-gray);
+            margin: 0 -1.5rem;
+            padding-left: 1.5rem;
+            padding-right: 1.5rem;
+            border-radius: 8px;
+        }
+
+        .job-item:last-child {
+            border-bottom: none;
+        }
+
+        .job-info h4 {
+            color: var(--dark-gray);
+            margin-bottom: 0.5rem;
+            font-size: 1.1rem;
+        }
+
+        .company-name {
+            color: var(--primary-orange);
+            font-weight: 500;
+            margin-bottom: 0.25rem;
+        }
+
+        .job-meta {
+            font-size: 0.9rem;
+            color: var(--gray);
+            margin-bottom: 0.5rem;
+        }
+
+        .job-tags {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .tag {
+            background-color: var(--light-gray);
+            color: var(--gray);
+            padding: 0.25rem 0.75rem;
+            border-radius: 15px;
+            font-size: 0.8rem;
+        }
+
+        .tag.visa-sponsor {
+            background-color: #d4edda;
+            color: var(--success);
+        }
+
+        .job-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            align-items: flex-end;
+        }
+
+        .salary {
+            font-weight: bold;
+            color: var(--primary-orange);
+            margin-bottom: 0.5rem;
+        }
+
+        .btn-sm {
+            padding: 0.5rem 1rem;
+            font-size: 0.9rem;
+        }
+
+        /* Application Status */
+        .application-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 0;
+            border-bottom: 1px solid #f1f1f1;
+        }
+
+        .application-info h5 {
+            color: var(--dark-gray);
+            margin-bottom: 0.25rem;
+        }
+
+        .application-date {
+            font-size: 0.9rem;
+            color: var(--gray);
+        }
+
+        .status-badge {
+            padding: 0.4rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            text-transform: uppercase;
+        }
+
+        .status-pending {
+            background-color: #fff3cd;
+            color: #856404;
+        }
+
+        .status-reviewing {
+            background-color: #cce7ff;
+            color: #004085;
+        }
+
+        .status-interview {
+            background-color: #d4edda;
+            color: var(--success);
+        }
+
+        .status-rejected {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+
+        /* Profile Summary */
+        .profile-summary {
+            text-align: center;
+            padding: 1rem 0;
+        }
+
+        .profile-photo {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--light-orange), var(--secondary-orange));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--white);
+            font-size: 2rem;
+            font-weight: bold;
+            margin: 0 auto 1rem;
+        }
+
+        .profile-score {
+            background-color: var(--light-gray);
+            border-radius: 10px;
+            padding: 1rem;
+            margin-top: 1rem;
+        }
+
+        .score-number {
+            font-size: 2rem;
+            font-weight: bold;
+            color: var(--primary-orange);
+        }
+
+        /* Search Filter */
+        .search-section {
+            background: var(--white);
+            padding: 1.5rem;
+            border-radius: 10px;
+            box-shadow: var(--shadow);
+            margin-bottom: 2rem;
+        }
+
+        .search-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr auto;
+            gap: 1rem;
+            align-items: end;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-group label {
+            font-weight: 500;
+            color: var(--dark-gray);
+            margin-bottom: 0.5rem;
+        }
+
+        .form-group input,
+        .form-group select {
+            padding: 0.75rem;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 1rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .dashboard-container {
+                flex-direction: column;
+            }
+
+            .sidebar {
+                width: 100%;
+                padding: 1rem 0;
+            }
+
+            .sidebar-menu {
+                display: flex;
+                overflow-x: auto;
+                padding: 0 1rem;
+            }
+
+            .sidebar-menu li {
+                margin-bottom: 0;
+                margin-right: 1rem;
+                white-space: nowrap;
+            }
+
+            .content-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .search-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .job-item {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+            }
+
+            .job-actions {
+                align-items: flex-start;
+                flex-direction: row;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <nav class="nav">
+            <a href="work-away-demo.html" class="logo">Work Away</a>
+            <div class="user-info">
+                <span>Alex Rodriguez</span>
+                <div class="user-avatar">AR</div>
+                <button class="btn btn-secondary" onclick="logout()" style="margin-left: 1rem; padding: 0.5rem 1rem; background: transparent; color: white; border: 1px solid white;">Logout</button>
+            </div>
+        </nav>
+    </header>
+
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <ul class="sidebar-menu">
+                <li><a href="#" class="active"><span class="icon">📊</span>Dashboard</a></li>
+                <li><a href="#"><span class="icon">🔍</span>Find Jobs</a></li>
+                <li><a href="#"><span class="icon">📋</span>Applications</a></li>
+                <li><a href="#"><span class="icon">👤</span>Profile</a></li>
+                <li><a href="#"><span class="icon">📄</span>Resume</a></li>
+                <li><a href="#"><span class="icon">💬</span>Messages</a></li>
+                <li><a href="#"><span class="icon">🎯</span>Skills Test</a></li>
+                <li><a href="#"><span class="icon">🌍</span>Visa Guide</a></li>
+                <li><a href="#"><span class="icon">⚙️</span>Settings</a></li>
+            </ul>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <div class="page-header">
+                <h1 class="page-title">Job Seeker Dashboard</h1>
+                <button class="btn btn-primary" onclick="alert('Opening profile editor...')">
+                    ✏️ Edit Profile
+                </button>
+            </div>
+
+            <!-- Profile Completion Alert -->
+            <div class="profile-alert">
+                <span style="font-size: 1.5rem;">⚠️</span>
+                <div style="flex: 1;">
+                    <strong>Complete your profile to get better job matches!</strong>
+                    <div style="margin-top: 0.5rem;">
+                        <div class="progress-bar">
+                            <div class="progress-fill"></div>
+                        </div>
+                        <small style="color: var(--gray); margin-top: 0.25rem; display: block;">75% complete - Add work experience and skills</small>
+                    </div>
+                </div>
+                <button class="btn btn-primary btn-sm">Complete Now</button>
+            </div>
+
+            <!-- Stats Grid -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-number">12</div>
+                    <div class="stat-label">Applications Sent</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">47</div>
+                    <div class="stat-label">Profile Views</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">3</div>
+                    <div class="stat-label">Interview Invites</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">156</div>
+                    <div class="stat-label">Jobs Saved</div>
+                </div>
+            </div>
+
+            <!-- Job Search Section -->
+            <div class="search-section">
+                <h3 style="margin-bottom: 1rem; color: var(--dark-gray);">🔍 Find Your Next Opportunity</h3>
+                <div class="search-grid">
+                    <div class="form-group">
+                        <label>Job Title or Keywords</label>
+                        <input type="text" placeholder="e.g. Software Developer, Marketing Manager">
+                    </div>
+                    <div class="form-group">
+                        <label>Location</label>
+                        <select>
+                            <option>Any Country</option>
+                            <option>United States</option>
+                            <option>Canada</option>
+                            <option>United Kingdom</option>
+                            <option>Germany</option>
+                            <option>Australia</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Visa Sponsorship</label>
+                        <select>
+                            <option>Any</option>
+                            <option>Required</option>
+                            <option>Not Required</option>
+                        </select>
+                    </div>
+                    <button class="btn btn-primary">Search</button>
+                </div>
+            </div>
+
+            <!-- Content Grid -->
+            <div class="content-grid">
+                <!-- Recommended Jobs -->
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Recommended Jobs</h3>
+                        <a href="#" style="color: var(--primary-orange);">View All (234)</a>
+                    </div>
+                    <div class="card-body">
+                        <div class="job-item">
+                            <div class="job-info">
+                                <div class="company-name">TechCorp Solutions</div>
+                                <h4>Senior Frontend Developer</h4>
+                                <div class="job-meta">📍 Berlin, Germany • 💼 Full-time • ⏱️ Posted 2 days ago</div>
+                                <div class="job-tags">
+                                    <span class="tag">React</span>
+                                    <span class="tag">TypeScript</span>
+                                    <span class="tag visa-sponsor">Visa Sponsor</span>
+                                </div>
+                            </div>
+                            <div class="job-actions">
+                                <div class="salary">€65,000 - €85,000</div>
+                                <button class="btn btn-primary btn-sm">Apply Now</button>
+                                <button class="btn btn-outline btn-sm">Save Job</button>
+                            </div>
+                        </div>
+
+                        <div class="job-item">
+                            <div class="job-info">
+                                <div class="company-name">Global Innovations Inc.</div>
+                                <h4>Product Marketing Manager</h4>
+                                <div class="job-meta">📍 Toronto, Canada • 💼 Full-time • ⏱️ Posted 1 day ago</div>
+                                <div class="job-tags">
+                                    <span class="tag">Marketing</span>
+                                    <span class="tag">Analytics</span>
+                                    <span class="tag visa-sponsor">Visa Sponsor</span>
+                                </div>
+                            </div>
+                            <div class="job-actions">
+                                <div class="salary">CAD 75,000 - 95,000</div>
+                                <button class="btn btn-primary btn-sm">Apply Now</button>
+                                <button class="btn btn-outline btn-sm">Save Job</button>
+                            </div>
+                        </div>
+
+                        <div class="job-item">
+                            <div class="job-info">
+                                <div class="company-name">Design Studio Pro</div>
+                                <h4>UX/UI Designer</h4>
+                                <div class="job-meta">📍 Sydney, Australia • 💼 Contract • ⏱️ Posted 4 days ago</div>
+                                <div class="job-tags">
+                                    <span class="tag">Figma</span>
+                                    <span class="tag">User Research</span>
+                                    <span class="tag">Remote OK</span>
+                                </div>
+                            </div>
+                            <div class="job-actions">
+                                <div class="salary">AUD 80 - 120/hour</div>
+                                <button class="btn btn-primary btn-sm">Apply Now</button>
+                                <button class="btn btn-outline btn-sm">Save Job</button>
+                            </div>
+                        </div>
+
+                        <div class="job-item">
+                            <div class="job-info">
+                                <div class="company-name">NextGen Startups</div>
+                                <h4>Data Scientist</h4>
+                                <div class="job-meta">📍 London, UK • 💼 Full-time • ⏱️ Posted 1 week ago</div>
+                                <div class="job-tags">
+                                    <span class="tag">Python</span>
+                                    <span class="tag">Machine Learning</span>
+                                    <span class="tag visa-sponsor">Visa Sponsor</span>
+                                </div>
+                            </div>
+                            <div class="job-actions">
+                                <div class="salary">£55,000 - £75,000</div>
+                                <button class="btn btn-primary btn-sm">Apply Now</button>
+                                <button class="btn btn-outline btn-sm">Save Job</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Profile & Applications -->
+                <div>
+                    <!-- Profile Summary -->
+                    <div class="card" style="margin-bottom: 2rem;">
+                        <div class="card-header">
+                            <h3 class="card-title">Profile Summary</h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="profile-summary">
+                                <div class="profile-photo">AR</div>
+                                <h4>Alex Rodriguez</h4>
+                                <p style="color: var(--gray); margin-bottom: 1rem;">Software Developer<br>Barcelona, Spain</p>
+                                <div class="profile-score">
+                                    <div>Profile Match Score</div>
+                                    <div class="score-number">87%</div>
+                                    <small style="color: var(--gray);">Above Average</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Recent Applications -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">Recent Applications</h3>
+                            <a href="#" style="color: var(--primary-orange);">View All</a>
+                        </div>
+                        <div class="card-body">
+                            <div class="application-item">
+                                <div class="application-info">
+                                    <h5>Senior Frontend Developer</h5>
+                                    <div class="application-date">Applied 2 days ago</div>
+                                </div>
+                                <span class="status-badge status-reviewing">Under Review</span>
+                            </div>
+                            <div class="application-item">
+                                <div class="application-info">
+                                    <h5>Full Stack Developer</h5>
+                                    <div class="application-date">Applied 5 days ago</div>
+                                </div>
+                                <span class="status-badge status-interview">Interview Scheduled</span>
+                            </div>
+                            <div class="application-item">
+                                <div class="application-info">
+                                    <h5>React Developer</h5>
+                                    <div class="application-date">Applied 1 week ago</div>
+                                </div>
+                                <span class="status-badge status-pending">Pending</span>
+                            </div>
+                            <div class="application-item">
+                                <div class="application-info">
+                                    <h5>Software Engineer</h5>
+                                    <div class="application-date">Applied 2 weeks ago</div>
+                                </div>
+                                <span class="status-badge status-rejected">Not Selected</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // Sidebar navigation
+        document.querySelectorAll('.sidebar-menu a').forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                // Remove active class from all links
+                document.querySelectorAll('.sidebar-menu a').forEach(l => l.classList.remove('active'));
+                
+                // Add active class to clicked link
+                this.classList.add('active');
+                
+                // In a real app, this would load different content
+                console.log('Loading section:', this.textContent.trim());
+            });
+        });
+
+        // Job application handlers
+        document.querySelectorAll('.job-item').forEach(item => {
+            const applyBtn = item.querySelector('.btn-primary');
+            const saveBtn = item.querySelector('.btn-outline');
+            
+            if (applyBtn) {
+                applyBtn.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    alert('Opening application form with pre-filled profile information...');
+                });
+            }
+            
+            if (saveBtn) {
+                saveBtn.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    this.textContent = this.textContent === 'Save Job' ? '✓ Saved' : 'Save Job';
+                    this.style.backgroundColor = this.textContent === '✓ Saved' ? 'var(--success)' : '';
+                    this.style.color = this.textContent === '✓ Saved' ? 'white' : '';
+                });
+            }
+        });
+
+        // Search functionality
+        document.querySelector('.search-section .btn-primary').addEventListener('click', function() {
+            alert('Searching for jobs with your criteria...');
+        });
+
+        // Profile completion
+        document.querySelector('.profile-alert .btn').addEventListener('click', function() {
+            alert('Opening profile completion wizard...');
+        });
+
+        // Logout function
+        function logout() {
+            if (confirm('Are you sure you want to logout?')) {
+                window.location.href = 'work-away-demo.html';
+            }
+        }
+    </script>
+</body>
+</html>

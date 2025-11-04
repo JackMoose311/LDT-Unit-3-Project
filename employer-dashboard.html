@@ -1,0 +1,617 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Employer Dashboard - Work Away</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-orange: #ff6b35;
+            --secondary-orange: #ff8c42;
+            --light-orange: #ffb366;
+            --dark-orange: #e55a2b;
+            --white: #ffffff;
+            --light-gray: #f8f9fa;
+            --gray: #6c757d;
+            --dark-gray: #495057;
+            --success: #28a745;
+            --warning: #ffc107;
+            --info: #17a2b8;
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: var(--dark-gray);
+            background-color: var(--light-gray);
+        }
+
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, var(--primary-orange), var(--secondary-orange));
+            color: var(--white);
+            padding: 1rem 0;
+            box-shadow: var(--shadow);
+        }
+
+        .nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: bold;
+            text-decoration: none;
+            color: var(--white);
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            background-color: var(--white);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary-orange);
+            font-weight: bold;
+        }
+
+        /* Sidebar */
+        .dashboard-container {
+            display: flex;
+            max-width: 1400px;
+            margin: 0 auto;
+            background-color: var(--white);
+            min-height: calc(100vh - 80px);
+        }
+
+        .sidebar {
+            width: 250px;
+            background-color: var(--white);
+            border-right: 1px solid #e9ecef;
+            padding: 2rem 0;
+        }
+
+        .sidebar-menu {
+            list-style: none;
+        }
+
+        .sidebar-menu li {
+            margin-bottom: 0.5rem;
+        }
+
+        .sidebar-menu a {
+            display: flex;
+            align-items: center;
+            padding: 1rem 2rem;
+            color: var(--gray);
+            text-decoration: none;
+            transition: all 0.3s ease;
+            border-left: 3px solid transparent;
+        }
+
+        .sidebar-menu a:hover,
+        .sidebar-menu a.active {
+            background-color: var(--light-gray);
+            color: var(--primary-orange);
+            border-left-color: var(--primary-orange);
+        }
+
+        .sidebar-menu .icon {
+            margin-right: 0.75rem;
+            font-size: 1.2rem;
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            padding: 2rem;
+        }
+
+        .page-header {
+            display: flex;
+            justify-content: between;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .page-title {
+            font-size: 2rem;
+            color: var(--dark-gray);
+            font-weight: 600;
+        }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary-orange), var(--secondary-orange));
+            color: var(--white);
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow);
+        }
+
+        /* Stats Cards */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: var(--white);
+            padding: 1.5rem;
+            border-radius: 10px;
+            box-shadow: var(--shadow);
+            border-left: 4px solid var(--primary-orange);
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: var(--primary-orange);
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            color: var(--gray);
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .stat-change {
+            font-size: 0.85rem;
+            margin-top: 0.5rem;
+        }
+
+        .positive {
+            color: var(--success);
+        }
+
+        /* Content Sections */
+        .content-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .card {
+            background: var(--white);
+            border-radius: 10px;
+            box-shadow: var(--shadow);
+            overflow: hidden;
+        }
+
+        .card-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid #e9ecef;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .card-title {
+            font-size: 1.25rem;
+            color: var(--dark-gray);
+            font-weight: 600;
+        }
+
+        .card-body {
+            padding: 1.5rem;
+        }
+
+        /* Job Listings */
+        .job-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 0;
+            border-bottom: 1px solid #f1f1f1;
+        }
+
+        .job-item:last-child {
+            border-bottom: none;
+        }
+
+        .job-info h4 {
+            color: var(--dark-gray);
+            margin-bottom: 0.25rem;
+        }
+
+        .job-meta {
+            font-size: 0.9rem;
+            color: var(--gray);
+        }
+
+        .job-stats {
+            text-align: right;
+        }
+
+        .applications-count {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: var(--primary-orange);
+        }
+
+        /* Recent Applications */
+        .application-item {
+            display: flex;
+            align-items: center;
+            padding: 1rem 0;
+            border-bottom: 1px solid #f1f1f1;
+        }
+
+        .candidate-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--light-orange), var(--secondary-orange));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--white);
+            font-weight: bold;
+            margin-right: 1rem;
+        }
+
+        .candidate-info h5 {
+            color: var(--dark-gray);
+            margin-bottom: 0.25rem;
+        }
+
+        .candidate-details {
+            font-size: 0.9rem;
+            color: var(--gray);
+        }
+
+        /* Status Badges */
+        .status-badge {
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            text-transform: uppercase;
+        }
+
+        .status-active {
+            background-color: #d4edda;
+            color: var(--success);
+        }
+
+        .status-pending {
+            background-color: #fff3cd;
+            color: #856404;
+        }
+
+        .status-closed {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+
+        /* Quick Actions */
+        .quick-actions {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .action-card {
+            background: var(--white);
+            padding: 1.5rem;
+            border-radius: 10px;
+            box-shadow: var(--shadow);
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+
+        .action-card:hover {
+            transform: translateY(-3px);
+            border-color: var(--light-orange);
+        }
+
+        .action-icon {
+            font-size: 2.5rem;
+            color: var(--primary-orange);
+            margin-bottom: 1rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .dashboard-container {
+                flex-direction: column;
+            }
+
+            .sidebar {
+                width: 100%;
+                padding: 1rem 0;
+            }
+
+            .sidebar-menu {
+                display: flex;
+                overflow-x: auto;
+                padding: 0 1rem;
+            }
+
+            .sidebar-menu li {
+                margin-bottom: 0;
+                margin-right: 1rem;
+                white-space: nowrap;
+            }
+
+            .content-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .stats-grid {
+                grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <nav class="nav">
+            <a href="work-away-demo.html" class="logo">Work Away</a>
+            <div class="user-info">
+                <span>TechCorp Solutions</span>
+                <div class="user-avatar">TC</div>
+                <button class="btn btn-secondary" onclick="logout()" style="margin-left: 1rem; padding: 0.5rem 1rem;">Logout</button>
+            </div>
+        </nav>
+    </header>
+
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <ul class="sidebar-menu">
+                <li><a href="#" class="active"><span class="icon">📊</span>Dashboard</a></li>
+                <li><a href="#"><span class="icon">💼</span>Job Postings</a></li>
+                <li><a href="#"><span class="icon">👥</span>Candidates</a></li>
+                <li><a href="#"><span class="icon">📋</span>Applications</a></li>
+                <li><a href="#"><span class="icon">📅</span>Interviews</a></li>
+                <li><a href="#"><span class="icon">📈</span>Analytics</a></li>
+                <li><a href="#"><span class="icon">⚙️</span>Settings</a></li>
+                <li><a href="#"><span class="icon">🌍</span>Visa Support</a></li>
+            </ul>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <div class="page-header">
+                <h1 class="page-title">Employer Dashboard</h1>
+                <button class="btn btn-primary" onclick="showModal('postJobModal')">
+                    ➕ Post New Job
+                </button>
+            </div>
+
+            <!-- Stats Grid -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-number">5</div>
+                    <div class="stat-label">Active Job Posts</div>
+                    <div class="stat-change positive">+2 this month</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">127</div>
+                    <div class="stat-label">Total Applications</div>
+                    <div class="stat-change positive">+23 this week</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">18</div>
+                    <div class="stat-label">New Candidates</div>
+                    <div class="stat-change positive">+8 today</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">3</div>
+                    <div class="stat-label">Interviews Scheduled</div>
+                    <div class="stat-change">Next: Tomorrow 2 PM</div>
+                </div>
+            </div>
+
+            <!-- Content Grid -->
+            <div class="content-grid">
+                <!-- Active Job Postings -->
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Active Job Postings</h3>
+                        <a href="#" style="color: var(--primary-orange);">View All</a>
+                    </div>
+                    <div class="card-body">
+                        <div class="job-item">
+                            <div class="job-info">
+                                <h4>Senior Software Engineer</h4>
+                                <div class="job-meta">Remote • Full-time • Posted 3 days ago</div>
+                            </div>
+                            <div class="job-stats">
+                                <div class="applications-count">47</div>
+                                <div style="font-size: 0.8rem; color: var(--gray);">Applications</div>
+                                <span class="status-badge status-active">Active</span>
+                            </div>
+                        </div>
+                        <div class="job-item">
+                            <div class="job-info">
+                                <h4>Product Manager</h4>
+                                <div class="job-meta">Berlin, Germany • Full-time • Posted 1 week ago</div>
+                            </div>
+                            <div class="job-stats">
+                                <div class="applications-count">32</div>
+                                <div style="font-size: 0.8rem; color: var(--gray);">Applications</div>
+                                <span class="status-badge status-active">Active</span>
+                            </div>
+                        </div>
+                        <div class="job-item">
+                            <div class="job-info">
+                                <h4>UX Designer</h4>
+                                <div class="job-meta">London, UK • Contract • Posted 5 days ago</div>
+                            </div>
+                            <div class="job-stats">
+                                <div class="applications-count">28</div>
+                                <div style="font-size: 0.8rem; color: var(--gray);">Applications</div>
+                                <span class="status-badge status-pending">Review</span>
+                            </div>
+                        </div>
+                        <div class="job-item">
+                            <div class="job-info">
+                                <h4>Marketing Specialist</h4>
+                                <div class="job-meta">Toronto, Canada • Full-time • Posted 2 weeks ago</div>
+                            </div>
+                            <div class="job-stats">
+                                <div class="applications-count">20</div>
+                                <div style="font-size: 0.8rem; color: var(--gray);">Applications</div>
+                                <span class="status-badge status-closed">Closed</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Recent Applications -->
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Recent Applications</h3>
+                        <a href="#" style="color: var(--primary-orange);">View All</a>
+                    </div>
+                    <div class="card-body">
+                        <div class="application-item">
+                            <div class="candidate-avatar">AM</div>
+                            <div class="candidate-info">
+                                <h5>Ana Martinez</h5>
+                                <div class="candidate-details">Senior Software Engineer<br>
+                                <span style="color: var(--primary-orange);">Barcelona, Spain</span></div>
+                            </div>
+                        </div>
+                        <div class="application-item">
+                            <div class="candidate-avatar">JK</div>
+                            <div class="candidate-info">
+                                <h5>Raj Kumar</h5>
+                                <div class="candidate-details">Product Manager<br>
+                                <span style="color: var(--primary-orange);">Mumbai, India</span></div>
+                            </div>
+                        </div>
+                        <div class="application-item">
+                            <div class="candidate-avatar">LW</div>
+                            <div class="candidate-info">
+                                <h5>Liu Wei</h5>
+                                <div class="candidate-details">UX Designer<br>
+                                <span style="color: var(--primary-orange);">Shanghai, China</span></div>
+                            </div>
+                        </div>
+                        <div class="application-item">
+                            <div class="candidate-avatar">MJ</div>
+                            <div class="candidate-info">
+                                <h5>Marie Johansson</h5>
+                                <div class="candidate-details">Marketing Specialist<br>
+                                <span style="color: var(--primary-orange);">Stockholm, Sweden</span></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Actions -->
+            <h3 style="margin-bottom: 1rem; color: var(--dark-gray);">Quick Actions</h3>
+            <div class="quick-actions">
+                <div class="action-card" onclick="alert('Opening job posting form...')">
+                    <div class="action-icon">💼</div>
+                    <h4>Post New Job</h4>
+                    <p>Create and publish a new job opening</p>
+                </div>
+                <div class="action-card" onclick="alert('Opening candidate search...')">
+                    <div class="action-icon">🔍</div>
+                    <h4>Search Candidates</h4>
+                    <p>Browse our global talent pool</p>
+                </div>
+                <div class="action-card" onclick="alert('Opening interview scheduler...')">
+                    <div class="action-icon">📅</div>
+                    <h4>Schedule Interview</h4>
+                    <p>Set up interviews with candidates</p>
+                </div>
+                <div class="action-card" onclick="alert('Opening visa support...')">
+                    <div class="action-icon">🌍</div>
+                    <h4>Visa Support</h4>
+                    <p>Get help with work permits</p>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // Simulate dynamic updates
+        function updateStats() {
+            // This would normally fetch real data from the server
+            console.log('Updating dashboard stats...');
+        }
+
+        // Quick action handlers
+        function showModal(modalId) {
+            alert('In a real application, this would open a form to post a new job listing with fields for job title, description, requirements, salary, location, visa sponsorship availability, etc.');
+        }
+
+        // Sidebar navigation
+        document.querySelectorAll('.sidebar-menu a').forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                // Remove active class from all links
+                document.querySelectorAll('.sidebar-menu a').forEach(l => l.classList.remove('active'));
+                
+                // Add active class to clicked link
+                this.classList.add('active');
+                
+                // In a real app, this would load different content
+                console.log('Loading section:', this.textContent.trim());
+            });
+        });
+
+        // Auto-refresh dashboard every 30 seconds
+        setInterval(updateStats, 30000);
+
+        // Logout function
+        function logout() {
+            if (confirm('Are you sure you want to logout?')) {
+                window.location.href = 'work-away-demo.html';
+            }
+        }
+    </script>
+</body>
+</html>
